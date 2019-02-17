@@ -47,6 +47,23 @@ app.post('/shopping-list', jsonParser, (req, res) => {
   res.status(201).json(item);
 });
 
+// create post request for '/recipes' endpoint
+app.post('/recipes',jsonParser, (req,res) => {
+  const requiredHeader = ['name','ingredients'];
+  for (let i=0; i<requiredHeader; i++) {
+    const header = requiredHeader[i];
+    // returns 400 error code due to incorrect body fields
+    if (!(header in req.body)) {
+      const error = `Missing \`${header}\` in request body`
+      console.error(error);
+      return res.status(400).send(error);
+    }
+  }
+  // returns 201 status for proper field inputs
+  const returnRecipes = Recipes.create(req.body.name, req.body.ingredients);
+  res.status(201).json(returnRecipes);
+});
+
 
 app.get('/recipes', (req, res) => {
   res.json(Recipes.get());
